@@ -3,9 +3,15 @@ const inquirer = require('inquirer');
 //const mysql = require('mysql2');
 const cTable = require('console.table');
 
+const newDept = require('./lib/addDepartment');
+const newRole = require('./lib/addRole');
+const newEmployee = require('./lib/addEmployee');
 
+let toExit = false;
+
+// view department names and department ids
 function viewAllDepts(){
-    const sql = 'SELECT * FROM department'
+    const sql = 'SELECT * FROM department';
     db.query(sql, (err, rows) => {
         if (err) {
             console.log(err);
@@ -16,8 +22,12 @@ function viewAllDepts(){
     })
 };
 
+// view job title, role id, the department that role belongs to, and the salary for that role
 function viewAllRoles(){
-    const sql = 'SELECT * FROM role'
+    const sql = `
+        SELECT role.id as role_id, role.title as role_title, department.name AS department_name
+        FROM role
+        LEFT JOIN department ON role.department_id = department.id`;
     db.query(sql, (err, rows) => {
         if (err) {
             console.log(err);
@@ -29,7 +39,11 @@ function viewAllRoles(){
 };
 
 function viewAllEmployees(){
-    const sql = 'SELECT * FROM employee'
+    const sql =`
+        select employee.id, employee.first_name, employee.last_name, role.title as job_title, department.name as department_name, role.salary
+        from employee
+        inner join role on employee.role_id = role.id
+        inner join department on role.department_id = department.id`; // add manager
     db.query(sql, (err, rows) => {
         if (err) {
             console.log(err);
@@ -70,39 +84,41 @@ function redirect(data){
             viewAllEmployees();
             break;
         case 'Add a department':
-            console.log('You chose add dept');
-            // insert query function
+            newDept();
             break;
         case 'Add a role':
-            console.log('You chose add role');
-            // insert query function
+            newRole();
             break;
         case 'Add an employee':
-            console.log('You chose add employee');
-            // insert query function
+            newEmployee();
             break;
         case 'Update an employee role':
             console.log('You chose update employee');
             // insert query function
             break;        
         default:
-            console.log('Exit');    
+            console.log('Exit');
+            toExit = true;    
     }
 }
 
+
+function reset(){
+    mainMenu();
+}
+
+
 function mainMenu(){
     return inquirer.prompt(menuOptions)
-    .then(data => {
-        if (data.menuOption !== 'Exit'){
-            // console.log(data);
-            return redirect(data);
-        } else {
-            console.log('You chose to exit, goodbye!');
-            
-        }
-        
+    .then(data => {        
+            return redirect(data);        
     })
-       
+    .then( () => {
+        if (!toExit){
+            reset();
+        }
+        return;
+    })       
 };
 
 mainMenu();
