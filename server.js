@@ -3,6 +3,31 @@ const inquirer = require('inquirer');
 //const mysql = require('mysql2');
 const cTable = require('console.table');
 
+
+function viewAllDepts(){
+    const sql = 'SELECT * FROM department'
+    db.query(sql, (err, rows) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        console.table(rows);
+        return;    
+    })
+};
+
+function viewAllRoles(){
+    const sql = 'SELECT * FROM role'
+    db.query(sql, (err, rows) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        console.table(rows);
+        return;    
+    })
+};
+
 function viewAllEmployees(){
     const sql = 'SELECT * FROM employee'
     db.query(sql, (err, rows) => {
@@ -12,18 +37,9 @@ function viewAllEmployees(){
         }
         console.table(rows);
         return;    
-    });
+    })
 };
-// test query
-// const sql = 'SELECT * FROM employee'
-// db.query(sql, (err, rows) => {
-//     if (err) {
-//         console.log(err);
-//         return;
-//     }
-//     console.table(rows);
-//     return;
-// });
+
 const menuOptions = [
     {
         type: 'list',
@@ -45,16 +61,13 @@ const menuOptions = [
 function redirect(data){
     switch(data.menuOption) {
         case 'View all departments':
-            // insert query function
-            console.log('You chose view all depts');
+            viewAllDepts();
             break;
         case 'View all roles':
-            console.log('You chose view all roles');
-            // insert query function
+            viewAllRoles();
             break;
         case 'View all employees':
-            console.log('You chose view all employees');
-            // insert query function
+            viewAllEmployees();
             break;
         case 'Add a department':
             console.log('You chose add dept');
@@ -75,7 +88,6 @@ function redirect(data){
         default:
             console.log('Exit');    
     }
-    mainMenu();
 }
 
 function mainMenu(){
@@ -86,16 +98,11 @@ function mainMenu(){
             return redirect(data);
         } else {
             console.log('You chose to exit, goodbye!');
-        }        
-    })    
+            
+        }
+        
+    })
+       
 };
 
 mainMenu();
-// options:
-// view all departments
-// view all roles
-// view all employees
-// add a department
-// add a role
-// add an employee
-// update an employee role
