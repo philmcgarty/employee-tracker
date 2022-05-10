@@ -92,7 +92,7 @@ function redirect(data){
             newRole(mainMenu);
             break;
         case 'Add an employee':
-            newEmployee();
+            newEmployee(mainMenu);
             break;
         case 'Update an employee role':
             console.log('You chose update employee');
