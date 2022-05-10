@@ -6,6 +6,7 @@ const cTable = require('console.table');
 const newDept = require('./lib/addDepartment');
 const newRole = require('./lib/addRole');
 const newEmployee = require('./lib/addEmployee');
+const updateRole = require('./lib/updateEmployeeRole');
 
 
 // view department names and department ids
@@ -24,7 +25,7 @@ function viewAllDepts(){
 // view job title, role id, the department that role belongs to, and the salary for that role
 function viewAllRoles(){
     const sql = `
-        SELECT role.id AS role_id, role.title AS role_title, department.name AS department_name
+        SELECT role.id AS role_id, role.title AS role_title, department.name AS department_name, role.salary
         FROM role
         LEFT JOIN department ON role.department_id = department.id
         `;
@@ -86,7 +87,7 @@ function redirect(data){
             viewAllEmployees();
             break;
         case 'Add a department':
-            newDept();
+            newDept(mainMenu);
             break;
         case 'Add a role':
             newRole(mainMenu);
@@ -95,11 +96,10 @@ function redirect(data){
             newEmployee(mainMenu);
             break;
         case 'Update an employee role':
-            console.log('You chose update employee');
-            // insert query function
+            updateRole(mainMenu);
             break;        
         default:
-            // following 2 lines written by tutor
+            // following 2 lines provided by tutor
             db.end();
             process.exit(0);    
     }
